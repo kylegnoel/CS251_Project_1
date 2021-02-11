@@ -1,8 +1,9 @@
+
 public class Queue<Item>
 {
     Item[] array;
-    int front;
-    int back;
+    private int front;
+    private int back;
 
     /**
      * Constructor of the class.
@@ -11,6 +12,7 @@ public class Queue<Item>
     public Queue() {
         this.front = 0;
         this.back = 0;
+        this.array = (Item[]) new Object[1];
     }
 
     /**
@@ -28,31 +30,66 @@ public class Queue<Item>
      * TO DO BY STUDENT
      */
     public Item dequeue() throws EmptyQueueException {
-        return null;
+        if (isEmpty())
+            throw new EmptyQueueException();
+        Item result = array[front];
+        array[front] = null;
+        if (front + 1 < array.length)
+            front++;
+        else if (front + 1 == back) {
+            front = 0; back = 0;
+        } else if (front + 1 >= array.length) {
+            front = 0;
+        }
+        return result;
     }
 
     /**
      * Enqueues an item.
      * TO DO BY STUDENT
      */
-    public void enqueue(Item item) {
+    public void enqueue(Item item)  {
         // if the array is empty, then just put item in the 0 index
-        if (array[front] == null)
+        if (front == back)
             array[front] = item;
-
-        // else put the item in the back of the array
-        array[back] = item;
+        else
+            // else put the item in the back of the array
+            array[back] = item;
 
         // increment the back pointer if back + 1 is valid and empty
         if (back + 1 < array.length && array[back + 1] == null)
             back += 1;
 
-        if (back + 1 >= array.length && array[0] == null)
+        else if (back + 1 >= array.length && array[0] == null)
             back = 0;
 
-        if (back + 1 >= array.length && array[0] != null)
-            // resize the array
-            back = back;
+        else if ((back + 1 >= array.length && front == 0) || (back < front && back + 1 == front)) {
+
+            // resize the array to twice its size since the current one is full
+
+            Item[] temp = getArray();
+            array = (Item[]) new Object[temp.length * 2];
+
+            int j = 0;
+            if (front < back) {
+                for (int i = front; i <= back; i++, j++) {
+                    if (temp[i] != null)
+                        array[j] = temp[i];
+                }
+            } else {
+                for (int i = front; i < temp.length; i++, j++) {
+                    array[j] = temp[i];
+                }
+                for (int i = 0; i < front; i++, j++) {
+                    array[j] = temp[i];
+                }
+            }
+            if (array.length != 0) {
+                front = 0;
+            }
+            back = j;
+
+        }
 
     }
 
