@@ -11,12 +11,15 @@ public class Stack<Item>
         this.first = first;
     }
 
+    public Stack() {
+    }
+
     /**
      * Indicates whether the stack is empty or not.
      * TO DO BY STUDENT
      */
     public boolean isEmpty() {
-        return (first.item == null);
+        return first == null;
     }
 
     /**
@@ -43,7 +46,9 @@ public class Stack<Item>
         if (isEmpty())
             throw new EmptyStackException();
         if (size() == 1) {
-            return first.item;
+            Item item = first.item;
+            first = null;
+            return item;
         }
         StackNode<Item> temp = first;
         while (temp.next.next != null) {
