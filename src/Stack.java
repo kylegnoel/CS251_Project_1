@@ -7,7 +7,8 @@ public class Stack<Item>
      * Constructor of the class.
      * TO DO BY STUDENT
      */
-    public Stack() {
+    public Stack(StackNode<Item> first) {
+        this.first = first;
     }
 
     /**
@@ -15,7 +16,7 @@ public class Stack<Item>
      * TO DO BY STUDENT
      */
     public boolean isEmpty() {
-        return false;
+        return (first.item == null);
     }
 
     /**
@@ -23,7 +24,15 @@ public class Stack<Item>
      * TO DO BY STUDENT
      */
     public Item peek() throws EmptyStackException {
-        return null;
+        if (isEmpty())
+            throw new EmptyStackException();
+        if (size() == 1)
+            return first.item;
+        StackNode<Item> temp = first;
+        while (temp.next != null) {
+            temp = temp.next;
+        }
+        return temp.item;
     }
 
     /**
@@ -31,7 +40,18 @@ public class Stack<Item>
      * TO DO BY STUDENT
      */
     public Item pop() throws EmptyStackException {
-        return null;
+        if (isEmpty())
+            throw new EmptyStackException();
+        if (size() == 1) {
+            return first.item;
+        }
+        StackNode<Item> temp = first;
+        while (temp.next.next != null) {
+            temp = temp.next;
+        }
+        Item result = temp.next.item;
+        temp.next = null;
+        return result;
     }
 
     /**
@@ -39,6 +59,17 @@ public class Stack<Item>
      * TO DO BY STUDENT
      */
     public void push(Item item) {
+        StackNode<Item> node = new StackNode<>(item);
+        if (isEmpty()) {
+            first = node;
+            return;
+        }
+
+        StackNode<Item> temp = first;
+        while(temp.next != null) {
+            temp = temp.next;
+        }
+        temp.next = node;
     }
 
     /**
@@ -46,7 +77,15 @@ public class Stack<Item>
      * TO DO BY STUDENT
      */
     public int size() {
-        return 0;
+        if (isEmpty())
+            return 0;
+        StackNode<Item> temp = first;
+        int count = 0;
+        while (temp != null) {
+            count++;
+            temp = temp.next;
+        }
+        return count;
     }
 
 }
