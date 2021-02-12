@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * The class representing a maze.
  */
@@ -20,6 +22,7 @@ public class Maze extends Grid{
         int open = grid[i1][j1];
         path.push(start);
         grid[i1][j1] = -1;
+        printMaze();
         while (!path.isEmpty()) {
             if (i1 == i2 && j1 == j2) {
                 Pair[] result = new Pair[path.size()];
@@ -30,13 +33,13 @@ public class Maze extends Grid{
             }
             Pair next;
             try {
-                if ((open & Direction.EAST.getBit()) != 0 && grid[i1][j1+1] != -1) {
+                if ((open & Direction.EAST.getBit()) != 0 && j1+1 < grid[i1].length && grid[i1][j1+1] != -1) {
                     j1 += 1;
-                } else if ((open & Direction.SOUTH.getBit()) != 0 && grid[i1+1][j1] != -1) {
+                } else if ((open & Direction.SOUTH.getBit()) != 0 && i1+1 < grid.length && grid[i1+1][j1] != -1) {
                     i1 += 1;
-                } else if ((open & Direction.WEST.getBit()) != 0 && grid[i1][j1-1] != -1) {
+                } else if ((open & Direction.WEST.getBit()) != 0 && j1-1 >= 0 && grid[i1][j1-1] != -1) {
                     j1 -= 1;
-                } else if ((open & Direction.NORTH.getBit()) != 0 && grid[i1-1][j1] != -1) {
+                } else if ((open & Direction.NORTH.getBit()) != 0 && i1-1 >= 0 && grid[i1-1][j1] != -1) {
                     i1 -= 1;
                 } else {
                     path.pop();
@@ -47,9 +50,14 @@ public class Maze extends Grid{
                 }
                 next = new Pair(i1, j1);
                 path.push(next);
+                open = grid[i1][j1];
                 grid[i1][j1] = -1;
-            } catch (IndexOutOfBoundsException ignored) {
-
+                for (int i = 0; i < grid.length; i++) {
+                    System.out.println(Arrays.toString(grid[i]));
+                }
+                System.out.println();
+            } catch (IndexOutOfBoundsException exception) {
+                exception.printStackTrace();
             }
 
         }
