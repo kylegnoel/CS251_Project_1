@@ -571,7 +571,6 @@ public class TestQueue
 
 		//Test 3
 		score = TestQueue.test3(2);
-		score += TestQueue.test3(1);
 
 		if (score < 1.0)
 		{
