@@ -5,16 +5,16 @@ import java.io.IOException;
 
 public class TestMaze
 {
-//	public static double test1() {
-//		return runTest("maze_input_5_5.txt", "part1_test1_soln.txt", 0, 0, 4, 4);
-//	}
+	public static double test1() {
+		return runTest("maze_input_5_5.txt", "part1_test1_soln.txt", 0, 0, 4, 4);
+	}
 	public static double test2() {
 		return runTest("maze_input_5_5.txt", "part1_test2_soln.txt", 0, 4, 4, 0);
 	}
 
-//	public static double test3() {
-//		return runTest("maze_input_15_20.txt", "part1_test3_soln.txt", 7, 8, 1, 12);
-//	}
+	public static double test3() {
+		return runTest("maze_input_15_20.txt", "part1_test3_soln.txt", 7, 8, 1, 12);
+	}
 
 
 	public static double runTest(String mazeFile, String solnFile, int i1, int j1, int i2, int j2) {
@@ -108,10 +108,10 @@ public class TestMaze
 
 
 //		// Test 1
-		double score;
-//		double score = TestMaze.test1();
-//		total += score;
-//		System.out.println("Test 1 Score: " + score);
+//		double score;
+		double score = TestMaze.test1();
+		total += score;
+		System.out.println("Test 1 Score: " + score);
 
 		// Test 2
 		score = TestMaze.test2();
@@ -119,9 +119,9 @@ public class TestMaze
 		System.out.println("Test 2 Score: " + score);
 		
 		// Test 3
-//		score = TestMaze.test3();
-//		total += score;
-//		System.out.println("Test 3 Score: " + score);
+		score = TestMaze.test3();
+		total += score;
+		System.out.println("Test 3 Score: " + score);
 
 
 		System.out.println("Part 1 Total Score: " + total);

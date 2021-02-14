@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 /**
  * The class representing a maze.
  */
@@ -20,6 +18,12 @@ public class Maze extends Grid{
     public Pair[] findPath(int i1, int j1, int i2, int j2) throws EmptyStackException {
         Pair start = new Pair(i1, j1);
         int open = grid[i1][j1];
+        int[][] originalGrid = new int[grid.length][grid[0].length];
+        for (int i = 0; i < originalGrid.length; i++) {
+            for (int j = 0; j < originalGrid[i].length; j++) {
+                originalGrid[i][j] = grid[i][j];
+            }
+        }
         path.push(start);
         grid[i1][j1] = -1;
         printMaze();
@@ -31,6 +35,7 @@ public class Maze extends Grid{
                 }
                 return result;
             }
+
             Pair next;
             try {
                 if ((open & Direction.EAST.getBit()) != 0 && j1+1 < grid[i1].length && grid[i1][j1+1] != -1) {
@@ -43,20 +48,22 @@ public class Maze extends Grid{
                     i1 -= 1;
                 } else {
                     path.pop();
+                    if (path.isEmpty())
+                        return null;
                     next = (Pair) path.peek();
                     i1 = next.a;
                     j1 = next.b;
+                    open = originalGrid[i1][j1];
                     continue;
                 }
                 next = new Pair(i1, j1);
                 path.push(next);
+//                System.out.println(path.size());
                 open = grid[i1][j1];
                 grid[i1][j1] = -1;
-                for (int i = 0; i < grid.length; i++) {
-                    System.out.println(Arrays.toString(grid[i]));
-                }
-                System.out.println();
-            } catch (IndexOutOfBoundsException exception) {
+//                print();
+//                System.out.println();
+            } catch (Exception exception) {
                 exception.printStackTrace();
             }
 
