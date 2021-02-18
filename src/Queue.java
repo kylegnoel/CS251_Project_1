@@ -122,7 +122,9 @@ public class Queue<Item>
      * TO DO BY STUDENT
      */
     public Item peek() throws EmptyQueueException {
-        return null;
+        if (isEmpty())
+            throw new EmptyQueueException();
+        return array[front];
     }
 
     /**
