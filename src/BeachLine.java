@@ -1,9 +1,12 @@
+import java.util.Arrays;
 
 /**
  * The class representing a map.
  */
 public class BeachLine extends Grid
 {
+                            // n,ne, e,se, s,sw, w,nw
+    private int[] direction = {0, 0, 0, 0, 0, 0, 0, 0};
     /**
      * Constructor of the class.
      */
@@ -11,7 +14,6 @@ public class BeachLine extends Grid
     {
         super(filepath);
     }
-
 
     /**
      * Finds the beach line by starting the search at (i, j).
@@ -42,14 +44,19 @@ public class BeachLine extends Grid
             ans[z] = (Pair) line.dequeue();
             z++;
         }
+        System.out.println();
         printMap();
         return ans;
     }
 
-    public void findLine(int i, int j, Queue line) {
-        while (isInLandForFirstOne(i,j))
-            j++;
-        Pair firstShore = firstShore(i,j);
+    public void findLine(int i, int j, Queue line) throws EmptyQueueException {
+
+        Pair firstShore;
+        if (isInLandForFirstOne(i, j))
+            firstShore = firstSea(i, j);
+        else
+            firstShore = firstShore(i,j);
+
         if (firstShore == null)
             return;
         line.enqueue(firstShore);
@@ -63,7 +70,18 @@ public class BeachLine extends Grid
         while (!isDone) {
 
 //            printMap();
+            updateClosestLand(i, j);
+//            System.out.println(Arrays.toString(direction));
 //            System.out.println();
+            // if the land is on the top of current line, go up
+            if (direction[1] == 1) {
+                if (isShore(i-1, j) && grid[i-1][j] != -2) {
+                    i--;
+                    line.enqueue(new Pair(i,j));
+                    grid[i][j] = -2;
+                    continue;
+                }
+            }
             // if can go down, right and left, go left
             if (isShore(i+1, j) && grid[i + 1][j] != -2 && isShore(i, j + 1) && grid[i][j+1] != -2 && isShore(i, j-1) && grid[i][j-1] != -2) {
                 j--;
@@ -71,9 +89,9 @@ public class BeachLine extends Grid
                 grid[i][j] = -2;
                 continue;
             }
-            // if can go up and right and down, go up
+            // if can go up and right and down, go down
             if ((isShore(i+1, j) && grid[i + 1][j] != -2) && isShore(i, j+1) && grid[i][j+1] != -2 && isShore(i-1, j) && grid[i-1][j] != -2) {
-                i--;
+                i++;
                 line.enqueue(new Pair(i,j));
                 grid[i][j] = -2;
                 continue;
@@ -81,6 +99,14 @@ public class BeachLine extends Grid
             // if can go down, left and up, go up
             if ((isShore(i+1, j) && grid[i + 1][j] != -2) && isShore(i, j-1) && grid[i][j-1] != -2 && isShore(i-1, j) && grid[i-1][j] != -2) {
                 i--;
+                line.enqueue(new Pair(i,j));
+                grid[i][j] = -2;
+                continue;
+            }
+
+            // if can go up and down, go down
+            if (isShore(i+1, j) && grid[i + 1][j] != -2 && (isShore(i-1, j) && grid[i - 1][j] != -2)) {
+                i++;
                 line.enqueue(new Pair(i,j));
                 grid[i][j] = -2;
                 continue;
@@ -99,6 +125,15 @@ public class BeachLine extends Grid
                 line.enqueue(new Pair(i, j));
                 grid[i][j] = -2;
                 continue;
+            }
+            // if can go right and left, go left
+            if (direction[1] == 1) {
+                if (isShore(i, j + 1) && grid[i][j + 1] != -2 && isShore(i, j-1) && grid[i][j - 1] != -2) {
+                    j--;
+                    line.enqueue(new Pair(i, j));
+                    grid[i][j] = -2;
+                    continue;
+                }
             }
 
             // go right
@@ -136,6 +171,43 @@ public class BeachLine extends Grid
 
     }
 
+    public void updateClosestLand(int i, int j) {
+        if (i - 1 >= 0 && grid[i-1][j] == 1 && grid[i][j] != 1)
+            direction[0] = 1;
+        else
+            direction[0] = 0;
+        if (i - 1 >= 0 && j + 1 < grid[i-1].length && grid[i-1][j+1] == 1 && grid[i][j] != 1)
+            direction[1] = 1;
+        else
+            direction[1] = 0;
+        if (j + 1 < grid[i].length && grid[i][j+1] == 1 && grid[i][j] != 1)
+            direction[2] = 1;
+        else
+            direction[2] = 0;
+        if (i + 1 < grid.length && j + 1 < grid[i+1].length && grid[i+1][j+1] == 1 && grid[i][j] != 1)
+            direction[3] = 1;
+        else
+            direction[3] = 0;
+        if (i + 1 < grid.length && grid[i+1][j] == 1 && grid[i][j] != 1)
+            direction[4] = 1;
+        else
+            direction[4] = 0;
+        if (i + 1 < grid.length && j - 1 >= 0 && grid[i+1][j-1] == 1 && grid[i][j] != 1)
+            direction[5] = 1;
+        else
+            direction[5] = 0;
+        if (j - 1 >= 0 && grid[i][j-1] == 1 && grid[i][j] != 1)
+            direction[6] = 1;
+        else
+            direction[6] = 0;
+        if (i - 1 >= 0 && j - 1 >= 0 && grid[i-1][j-1] == 1 && grid[i][j] != 1)
+            direction[7] = 1;
+        else
+            direction[7] = 0;
+
+    }
+
+
     public Pair firstShore(int i, int j) {
         if (grid[i][j] != 1)
             return null;
@@ -158,12 +230,6 @@ public class BeachLine extends Grid
         return null;
     }
 
-    public boolean isInLand(int i, int j) {
-        if (i + 1 >= grid.length || i - 1 < 0 || j + 1 >= grid[i].length || j - 1 < 0)
-            return false;
-        return (grid[i-1][j] & grid[i-1][j+1] & grid[i][j+1] & grid[i+1][j+1] &
-                grid[i+1][j] & grid[i+1][j-1] & grid[i][j-1] & grid[i-1][j-1]) == 1;
-    }
 
     public boolean isInLandForFirstOne(int i, int j) {
         if (i + 1 >= grid.length || i - 1 < 0 || j + 1 >= grid[i].length || j - 1 < 0)
@@ -193,6 +259,72 @@ public class BeachLine extends Grid
 
         }
         return false;
+    }
+
+    public Pair firstSea(int i, int j) throws EmptyQueueException {
+        Queue line = new Queue();
+        line.enqueue(new Pair(i, j));
+        if (i - 1 >= 0) {
+            if (grid[i - 1][j] == 0)
+                return new Pair(i-1, j);
+            line.enqueue(new Pair(i-1, j));
+        }
+        if (j + 1 < grid[i].length){
+            if (grid[i][j+1] == 0)
+                return new Pair(i, j+1);
+            line.enqueue(new Pair(i, j + 1));
+        }
+        if (i + 1 < grid.length) {
+            if (grid[i+1][j] == 0)
+                return new Pair(i+1,j);
+            line.enqueue(new Pair(i + 1, j));
+        }
+        if (j - 1 >= 0) {
+            if (grid[i][j-1] == 0)
+                return new Pair(i, j-1);
+            line.enqueue(new Pair(i, j - 1));
+        }
+        grid[i][j] = -2;
+        if (line.isEmpty())
+            throw new EmptyQueueException();
+        line.dequeue();
+        while (grid[i][j] != 1) {
+//            printMap();
+            if (line.isEmpty())
+                throw new EmptyQueueException();
+            Pair current = (Pair) line.dequeue();
+            i = current.a;
+            j = current.b;
+            grid[i][j] = -2;
+            if (i - 1 >= 0) {
+                if (grid[i-1][j] == 1)
+                    line.enqueue(new Pair(i-1, j));
+                else if (grid[i-1][j] == 0)
+                    return new Pair(i-1,j);
+            }
+
+            if (j + 1 < grid[i].length) {
+                if (grid[i][j+1] == 1)
+                    line.enqueue(new Pair(i, j + 1));
+                else if (grid[i][j+1] == 0)
+                    return new Pair(i,j+1);
+            }
+
+            if (i + 1 < grid.length) {
+                if (grid[i + 1][j] == 1)
+                    line.enqueue(new Pair(i+1, j));
+                else if(grid[i + 1][j] == 0)
+                    return new Pair(i+1, j);
+            }
+
+            if (j - 1 >= 0) {
+                if (grid[i][j - 1] == 1)
+                    line.enqueue(new Pair(i, j -1));
+                else if (grid[i][j - 1] == 0)
+                    return new Pair(i, j - 1);
+            }
+        }
+        return null;
     }
 
     public Pair firstLand(int i, int j) throws EmptyQueueException {
